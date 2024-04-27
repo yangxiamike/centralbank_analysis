@@ -45,6 +45,8 @@ class FomcTestimony(FomcBase):
         elif from_year > 2006:
             print("All data from 2006 is in a single json, so return all from 2006 anyway though specified from year is ", from_year)
 
+
+        # xhr ajax 请求返回包
         url = self.base_url + '/json/ne-testimony.json'
         res = requests.get(url)
         res_list = json.loads(res.text)

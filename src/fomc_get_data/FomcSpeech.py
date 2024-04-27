@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 import threading
 import sys
 import os
@@ -44,12 +45,23 @@ class FomcSpeech(FomcBase):
         if from_year <= 1995:
             print("Archive only from 1996, so setting from_year as 1996...")
             from_year = 1996
+
+        # xhr ajax 请求返回包
+        url = self.base_url + '/json/ne-speeches.json'
+        res = requests.get(url)
+        res_list = json.loads(res.text)
+        for record in res_list:
+            doc_link = record.get('l')
+            if doc_link:
+                self.links.append(doc_link)
+                self.titles.append(record.get('t'))
+                self.speakers.append(record.get('s'))
+                date_str = record.get('d').split(" ")[0]
+                self.dates.append(datetime.strptime(date_str, '%m/%d/%Y'))
+
         for year in range(from_year, int(to_year)+1):
             # Archived between 1996 and 2005, URL changed from 2011
-            if year < 2011:
-                speech_url = self.speech_base_url + '/' + str(year) + 'speech.htm'
-            else:
-                speech_url = self.speech_base_url + '/' + str(year) + '-speeches.htm'
+            speech_url = self.speech_base_url + '/' + str(year) + 'speech.htm'
 
             res = requests.get(speech_url)
             soup = BeautifulSoup(res.text, 'html.parser')

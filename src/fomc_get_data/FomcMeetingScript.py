@@ -36,7 +36,9 @@ class FomcMeetingScript(FomcBase):
     def _get_links(self, from_year):
         '''
         Override private function that sets all the links for the contents to download on FOMC website
-         from from_year (=min(2015, from_year)) to the current most recent year
+         from from_year (=min(2018, from_year)) to the current most recent year, e.g. this year is 2024
+
+        Current year - 5 -1: Meeting scripts delays uploads after 5 years
         '''
         self.links = []
         self.titles = []
@@ -45,12 +47,14 @@ class FomcMeetingScript(FomcBase):
 
         r = requests.get(self.calendar_url)
         soup = BeautifulSoup(r.text, 'html.parser')
+
+        year_today = datetime.today().year
         
         # Meeting Script can be found only in the archive as it is published after five years
-        if from_year > 2014:
-            print("Meeting scripts are available for 2014 or older")
-        if from_year <= 2014:
-            for year in range(from_year, 2015):
+        if from_year > year_today-6:
+            print(f"Meeting scripts are available for {year_today-6} or older")
+        if from_year <= year_today-6:
+            for year in range(from_year, year_today-5):
                 yearly_contents = []
                 fomc_yearly_url = self.base_url + '/monetarypolicy/fomchistorical' + str(year) + '.htm'
                 r_year = requests.get(fomc_yearly_url)

@@ -27,8 +27,11 @@ class FomcStatement(FomcBase):
     def _get_links(self, from_year):
         '''
         Override private function that sets all the links for the contents to download on FOMC website
-         from from_year (=min(2015, from_year)) to the current most recent year
+         from from_year (=min(2018, from_year)) to the current most recent year
+        
+        Current year - 5 -1: Meeting scripts delays uploads after 5 years
         '''
+
         self.links = []
         self.titles = []
         self.speakers = []
@@ -36,6 +39,8 @@ class FomcStatement(FomcBase):
 
         r = requests.get(self.calendar_url)
         soup = BeautifulSoup(r.text, 'html.parser')
+
+        year_today = datetime.today().year
         
         # Getting links from current page. Meetin scripts are not available.
         if self.verbose: print("Getting links for statements...")
@@ -51,10 +56,10 @@ class FomcStatement(FomcBase):
 
         if self.verbose: print("{} links found in the current page.".format(len(self.links)))
 
-        # Archived before 2015
-        if from_year <= 2014:
+        # Archived before 2018
+        if from_year <= year_today-6:
             print("Getting links from archive pages...")
-            for year in range(from_year, 2015):
+            for year in range(from_year, year_today-5):
                 yearly_contents = []
                 fomc_yearly_url = self.base_url + '/monetarypolicy/fomchistorical' + str(year) + '.htm'
                 r_year = requests.get(fomc_yearly_url)
