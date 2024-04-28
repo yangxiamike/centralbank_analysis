@@ -59,8 +59,8 @@ class FomcSpeech(FomcBase):
                 date_str = record.get('d').split(" ")[0]
                 self.dates.append(datetime.strptime(date_str, '%m/%d/%Y'))
 
-        for year in range(from_year, int(to_year)+1):
-            # Archived between 1996 and 2005, URL changed from 2011
+        for year in range(from_year, 2006):
+            # Archived between 1996 and 2005, URL changed from 2006
             speech_url = self.speech_base_url + '/' + str(year) + 'speech.htm'
 
             res = requests.get(speech_url)

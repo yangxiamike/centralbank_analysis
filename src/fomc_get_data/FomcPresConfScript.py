@@ -107,6 +107,7 @@ class FomcPresConfScript(FomcBase):
         # Scripts are provided only in pdf. Save the pdf and pass the content
         res = requests.get(link_url)
 
+        os.makedirs(os.path.dirname(pdf_filepath), exist_ok=True)
         with open(pdf_filepath, 'wb') as f:
             f.write(res.content)
 
