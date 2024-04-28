@@ -95,9 +95,17 @@ class FomcStatement(FomcBase):
         if self.verbose:
             sys.stdout.write(".")
             sys.stdout.flush()
-
         res = requests.get(self.base_url + link)
         html = res.text
+        # p tag is not properly closed in many cases
+        html = html.replace('<P', '<p').replace('</P>', '</p>')
+        html = html.replace('<p', '</p><p').replace('</p><p', '<p', 1)
         article = BeautifulSoup(html, 'html.parser')
-        paragraphs = article.findAll('p')
-        self.articles[index] = "\n\n[SECTION]\n\n".join([paragraph.get_text().strip() for paragraph in paragraphs])
+        paragraphs = article.find_all('p')
+        paragraphs = [paragraph.get_text().strip() for paragraph in paragraphs]
+        paragraphs = [words for words in paragraphs if len(words.split(' ')) > 25 and 'else if' not in words]
+
+        # After 2006, hardcode rule
+        if 'The Federal Reserve, the central bank of the United States, provides' in paragraphs[0]:
+            paragraphs = paragraphs[2:]
+        self.articles[index] = "\n\n[SECTION]\n\n".join(paragraphs)

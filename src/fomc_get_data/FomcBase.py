@@ -43,15 +43,16 @@ class FomcBase(metaclass=ABCMeta):
             data=[["Greenspan", "Alan", "1987-08-11", "2006-01-31"], 
                   ["Bernanke", "Ben", "2006-02-01", "2014-01-31"], 
                   ["Yellen", "Janet", "2014-02-03", "2018-02-03"],
-                  ["Powell", "Jerome", "2018-02-05", "2022-02-05"]],
+                  ["Powell", "Jerome", "2018-02-05", "2024-05-01"]],
             columns=["Surname", "FirstName", "FromDate", "ToDate"])
         
     def _date_from_link(self, link):
         date = re.findall('[0-9]{8}', link)[0]
-        if date[4] == '0':
-            date = "{}-{}-{}".format(date[:4], date[5:6], date[6:])
-        else:
-            date = "{}-{}-{}".format(date[:4], date[4:6], date[6:])
+        # if date[4] == '0':
+        #     date = "{}-{}-{}".format(date[:4], date[4:6], date[6:])
+        # else:
+        #     date = "{}-{}-{}".format(date[:4], date[4:6], date[6:])
+        date = "{}-{}-{}".format(date[:4], date[4:6], date[6:])
         return date
 
     def _speaker_from_date(self, article_date):
